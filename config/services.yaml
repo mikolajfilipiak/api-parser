@@ -1,0 +1,34 @@
+# This file is the entry point to configure your own services.
+# Files in the packages/ subdirectory configure your dependencies.
+
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        autowire: true      # Automatically injects dependencies in your services.
+        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+
+    Musement\UserInterface\Command\:
+        resource: '../src/UserInterface/Command/'
+        tags: ['command']
+
+    # add more service definitions when explicit configuration is needed
+    # please note that last definitions always *replace* previous ones
+    Musement\SDK\MusementApi\MusementApi:
+        class: Musement\SDK\MusementApi\MusementApi
+    Musement\SDK\WeatherApi\WeatherApi:
+        class: Musement\SDK\WeatherApi\WeatherApi
+        arguments:
+            - '%env(resolve:WEATHER_API_KEY)%'
+
+    Musement\Infrastructure\ApplicationFactory:
+        arguments:
+            - '@Musement\SDK\MusementApi\MusementApi'
+            - '@Musement\SDK\WeatherApi\WeatherApi'
+
+    Musement\Application:
+        public: true
+        factory: '@Musement\Infrastructure\ApplicationFactory'
