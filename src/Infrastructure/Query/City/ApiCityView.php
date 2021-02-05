@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace Musement\Infrastructure\Query\Api;
+namespace Musement\Infrastructure\Query\City;
 
 use Musement\Application\Query\City\CityQuery;
 use Musement\Application\Query\City\Model\Cities;

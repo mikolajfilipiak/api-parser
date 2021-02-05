@@ -6,7 +6,7 @@ declare(strict_types=1);
 namespace Musement\Infrastructure;
 
 use Musement\Application;
-use Musement\Infrastructure\Query\Api\ApiCityView;
+use Musement\Infrastructure\Query\City\ApiCityView;
 use Musement\SDK\MusementApi\MusementApiSDK;
 use Musement\SDK\WeatherApi\WeatherApiSDK;
 
