@@ -30,23 +30,24 @@ final class CitiesWeatherForecastTwoDaysCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output) : int
     {
+        $citiesWithTwoDaysForecast = $this->application
+            ->cityQuery()
+            ->getAllWithTwoDaysForecast();
+
+        if (!$citiesWithTwoDaysForecast->count()) {
+            $output->writeln('There is no processed cities.');
+
+            return Command::FAILURE;
+        }
+
         \array_map(
             function (City $city) use ($output) {
-                if ($city->forecast() === null) {
-                    $output->writeln(\sprintf(
-                        'Processed city %s | no forecast data',
-                        $city->name()
-                    ));
-                } else {
-                    $output->writeln(\sprintf(
-                        'Processed city %s | %s - %s',
-                        $city->name(),
-                        $city->forecast()->today(),
-                        $city->forecast()->tomorrow()
-                    ));
-                }
+                $output->writeln(\sprintf(
+                    'Processed city %s',
+                    (string) $city
+                ));
             },
-            $this->application->cityQuery()->getAllWithTwoDaysForecast()->getAll()
+            $citiesWithTwoDaysForecast->getAll()
         );
 
         return Command::SUCCESS;

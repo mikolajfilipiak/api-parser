@@ -17,6 +17,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    Musement\Infrastructure\Utils\Clock:
+        class: Musement\Infrastructure\Utils\Clock
     Musement\SDK\MusementApi\MusementApi:
         class: Musement\SDK\MusementApi\MusementApi
     Musement\SDK\WeatherApi\WeatherApi:
@@ -28,6 +30,7 @@ services:
         arguments:
             - '@Musement\SDK\MusementApi\MusementApi'
             - '@Musement\SDK\WeatherApi\WeatherApi'
+            - '@Musement\Infrastructure\Utils\Clock'
 
     Musement\Application:
         public: true

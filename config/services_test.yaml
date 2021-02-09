@@ -1,0 +1,24 @@
+parameters:
+
+services:
+    _defaults:
+        public: true
+
+    Musement\Tests\Stubs\Application\ClockStub:
+        class: Musement\Tests\Stubs\Application\ClockStub
+
+    Musement\Tests\Stubs\SDK\MusementApi\MusementApiStub:
+        class: Musement\Tests\Stubs\SDK\MusementApi\MusementApiStub
+
+    Musement\Tests\Stubs\SDK\WeatherApi\WeatherApiStub:
+        class: Musement\Tests\Stubs\SDK\WeatherApi\WeatherApiStub
+
+    Musement\Infrastructure\ApplicationFactory:
+        arguments:
+            - '@Musement\Tests\Stubs\SDK\MusementApi\MusementApiStub'
+            - '@Musement\Tests\Stubs\SDK\WeatherApi\WeatherApiStub'
+            - '@Musement\Tests\Stubs\Application\ClockStub'
+
+    Musement\Application:
+        public: true
+        factory: '@Musement\Infrastructure\ApplicationFactory'

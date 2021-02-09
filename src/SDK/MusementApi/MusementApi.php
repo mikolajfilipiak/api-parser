@@ -5,8 +5,11 @@ declare(strict_types=1);
 
 namespace Musement\SDK\MusementApi;
 
+use Musement\SDK\MusementApi\Exception\NotFoundException;
+use Musement\SDK\MusementApi\Exception\ResponseException;
 use Musement\SDK\MusementApi\Model\Cities;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class MusementApi implements MusementApiSDK
@@ -20,27 +23,43 @@ final class MusementApi implements MusementApiSDK
 
     public function cities() : Cities
     {
-        $response = $this->httpClient->request(
-            $method = 'GET',
-            $url = '/api/v3/cities',
-            [
-                'headers' => ['Accept' => 'application/json'],
-            ]
-        );
+        try {
+            $response = $this->httpClient->request(
+                $method = 'GET',
+                $url = '/api/v3/cities',
+                [
+                    'headers' => ['Accept' => 'application/json'],
+                ]
+            );
 
-        if ($response->getStatusCode() !== 200) {
-            throw new \Exception();
-        }
-
-        return new Cities(...\array_map(
-            function (array $city) {
-                return new Cities\City(
-                    $city['name'],
-                    $city['latitude'],
-                    $city['longitude']
+            if ($response->getStatusCode() === 404) {
+                throw new NotFoundException(
+                    $message = 'Resource not found',
+                    $response->getStatusCode()
                 );
-            },
-            \json_decode($response->getContent(), true) ?? []
-        ));
+            } elseif ($response->getStatusCode() !== 200) {
+                throw new ResponseException(
+                    $message = 'Bad response code',
+                    $response->getStatusCode()
+                );
+            }
+
+            return new Cities(...\array_map(
+                function (array $city) {
+                    return new Cities\City(
+                        $city['name'],
+                        $city['latitude'],
+                        $city['longitude']
+                    );
+                },
+                \json_decode($response->getContent(), true) ?? []
+            ));
+        } catch (TransportExceptionInterface $exception) {
+            throw new ResponseException(
+                $message = 'Transport Exception',
+                $exception->getCode(),
+                $exception
+            );
+        }
     }
 }

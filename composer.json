@@ -16,8 +16,9 @@
         "symfony/yaml": "5.2.*"
     },
     "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.18",
         "phpstan/phpstan": "^0.12.71",
-        "friendsofphp/php-cs-fixer": "^2.18"
+        "symfony/phpunit-bridge": "^5.2"
     },
     "config": {
         "optimize-autoloader": true,
@@ -43,8 +44,14 @@
     },
     "scripts": {
         "tests": [
-            "@cs:php:test"
+            "bin/phpunit install",
+            "@cache:test:clear",
+            "@cs:php:test",
+            "bin/phpunit"
         ],
+        "cache:prod:clear": "bin/console cache:clear --env=prod",
+        "cache:dev:clear": "bin/console cache:clear --env=dev",
+        "cache:test:clear": "bin/console cache:clear --env=test",
         "cs:php:test": [
             "php-cs-fixer fix -v --dry-run --using-cache=no",
             "phpstan analyse -c phpstan.neon --no-progress --memory-limit=-1"

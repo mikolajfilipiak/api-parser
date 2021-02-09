@@ -28,4 +28,21 @@ final class City
     {
         return $this->forecast;
     }
+
+    public function __toString() : string
+    {
+        if ($this->forecast === null) {
+            return \sprintf(
+                '%s | no forecast data',
+                $this->name
+            );
+        }
+
+        return \sprintf(
+            '%s | %s - %s',
+            $this->name,
+            $this->forecast->today(),
+            $this->forecast->tomorrow()
+        );
+    }
 }

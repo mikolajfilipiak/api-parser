@@ -24,4 +24,21 @@ final class Cities
     {
         return $this->cities;
     }
+
+    public function first() : ?City
+    {
+        if (!empty($this->cities)) {
+            return \reset($this->cities);
+        }
+
+        return null;
+    }
+
+    /**
+     * @return int
+     */
+    public function count() : int
+    {
+        return \count($this->cities);
+    }
 }
