@@ -1,4 +1,4 @@
-# Musemsnt #1
+# Musement #1
 
 ## Environment
 *PHP 7.4*

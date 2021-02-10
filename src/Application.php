@@ -8,10 +8,7 @@ use Musement\Application\Query\City\CityQuery;
 
 final class Application
 {
-    /**
-     * @var CityQuery
-     */
-    private $query;
+    private CityQuery $query;
 
     public function __construct(CityQuery $query)
     {

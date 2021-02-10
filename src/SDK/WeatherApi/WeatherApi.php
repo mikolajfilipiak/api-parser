@@ -6,9 +6,13 @@ declare(strict_types=1);
 namespace Musement\SDK\WeatherApi;
 
 use Musement\SDK\WeatherApi\Exception\ArgumentException;
+use Musement\SDK\WeatherApi\Exception\MalformedResponseException;
 use Musement\SDK\WeatherApi\Exception\NotFoundException;
 use Musement\SDK\WeatherApi\Exception\ResponseException;
 use Musement\SDK\WeatherApi\Model\Forecast;
+use Musement\Shared\ArrayAccessor\ArrayAccessor;
+use Musement\Shared\ArrayAccessor\Exception\InvalidTypeException;
+use Musement\Shared\ArrayAccessor\Exception\KeyNotExistException;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -64,25 +68,31 @@ final class WeatherApi implements WeatherApiSDK
 
             return new Forecast(
                 new Forecast\Location(
-                    $data['location']['name'],
-                    $data['location']['lat'],
-                    $data['location']['lon'],
+                    ArrayAccessor::string($data, 'location.name'),
+                    ArrayAccessor::float($data, 'location.lat'),
+                    ArrayAccessor::float($data, 'location.lon')
                 ),
                 new Forecast\ForecastDays(...\array_map(
                     function (array $forecastDay) {
                         return new Forecast\ForecastDays\ForecastDay(
-                            $forecastDay['date'],
+                            ArrayAccessor::string($forecastDay, 'date'),
                             new Forecast\ForecastDays\ForecastDay\Condition(
-                                $forecastDay['day']['condition']['text']
+                                ArrayAccessor::string($forecastDay, 'day.condition.text')
                             )
                         );
                     },
-                    $data['forecast']['forecastday']
+                    ArrayAccessor::array($data, 'forecast.forecastday')
                 ))
             );
         } catch (TransportExceptionInterface $exception) {
             throw new ResponseException(
                 $message = 'Transport Exception',
+                $exception->getCode(),
+                $exception
+            );
+        } catch (KeyNotExistException|InvalidTypeException $exception) {
+            throw new MalformedResponseException(
+                $message = 'Malformed Response Exception',
                 $exception->getCode(),
                 $exception
             );

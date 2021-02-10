@@ -7,6 +7,6 @@ namespace Musement\Tests\Unit;
 
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class UnitTestCase extends KernelTestCase
+abstract class UnitTestCase extends KernelTestCase
 {
 }

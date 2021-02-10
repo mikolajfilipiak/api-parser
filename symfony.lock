@@ -32,6 +32,9 @@
             ".php_cs.dist"
         ]
     },
+    "minwork/array": {
+        "version": "v1.13.5"
+    },
     "php-cs-fixer/diff": {
         "version": "v1.3.1"
     },

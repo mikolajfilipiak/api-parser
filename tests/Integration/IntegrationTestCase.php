@@ -15,7 +15,7 @@ use Musement\Tests\Stubs\SDK\MusementApi\MusementApiStub;
 use Musement\Tests\Stubs\SDK\WeatherApi\WeatherApiStub;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
-class IntegrationTestCase extends KernelTestCase
+abstract class IntegrationTestCase extends KernelTestCase
 {
     protected ClockContext $clockContext;
 

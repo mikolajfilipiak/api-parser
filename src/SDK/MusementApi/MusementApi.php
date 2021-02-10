@@ -5,9 +5,13 @@ declare(strict_types=1);
 
 namespace Musement\SDK\MusementApi;
 
+use Musement\SDK\MusementApi\Exception\MalformedResponseException;
 use Musement\SDK\MusementApi\Exception\NotFoundException;
 use Musement\SDK\MusementApi\Exception\ResponseException;
 use Musement\SDK\MusementApi\Model\Cities;
+use Musement\Shared\ArrayAccessor\ArrayAccessor;
+use Musement\Shared\ArrayAccessor\Exception\InvalidTypeException;
+use Musement\Shared\ArrayAccessor\Exception\KeyNotExistException;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -47,9 +51,9 @@ final class MusementApi implements MusementApiSDK
             return new Cities(...\array_map(
                 function (array $city) {
                     return new Cities\City(
-                        $city['name'],
-                        $city['latitude'],
-                        $city['longitude']
+                        ArrayAccessor::string($city, 'name'),
+                        ArrayAccessor::float($city, 'latitude'),
+                        ArrayAccessor::float($city, 'longitude')
                     );
                 },
                 \json_decode($response->getContent(), true) ?? []
@@ -57,6 +61,12 @@ final class MusementApi implements MusementApiSDK
         } catch (TransportExceptionInterface $exception) {
             throw new ResponseException(
                 $message = 'Transport Exception',
+                $exception->getCode(),
+                $exception
+            );
+        } catch (KeyNotExistException|InvalidTypeException $exception) {
+            throw new MalformedResponseException(
+                $message = 'Malformed Response Exception',
                 $exception->getCode(),
                 $exception
             );
