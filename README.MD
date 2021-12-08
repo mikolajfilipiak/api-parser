@@ -8,7 +8,7 @@ Just run:
 
 `cp .env .env.local`
 
-Set variable `WEATHER_API_KEY` in `.env.local` file
+Set variable `WEATHER_API_KEY` (https://www.weatherapi.com/) in `.env.local` file
 
 `composer install`
 
