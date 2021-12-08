@@ -1,5 +1,3 @@
-# Musement Step #1
-
 ## Environment
 *PHP 7.4*
 
